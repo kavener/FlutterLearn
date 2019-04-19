@@ -758,6 +758,14 @@ class NewStack extends StatelessWidget {
                     )),
                 color: Colors.red,
               ),
+              Positioned(
+                left: 18.0,
+                child: Text("I'm Jack"),
+              ),
+              Positioned(
+                top: 18.0,
+                child: Text("Your Friend"),
+              ),
             ],
           )),
     );
