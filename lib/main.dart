@@ -53,6 +53,8 @@ class MyApp extends StatelessWidget {
         "row_page": (context) => NewRow(),
         // 学习Flex弹性布局
         "flex_page": (context) => NewFlex(),
+        // 学习W流式布局rap
+        "wrap_page": (context) => NewWrap(),
       },
       // 应用首页路由
       home: new MyHomePage(title: 'Flutter Demo Home Page'),
@@ -85,23 +87,24 @@ class _MyHomePageState extends State<MyHomePage> {
   // 构建UI界面的逻辑build方法
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(widget.title),
-      ),
-      body: new Center(
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          // 泛型Widget，即接受Widget组件类型构建列表
+        appBar: new AppBar(
+          title: new Text(widget.title),
+        ),
+        body: Wrap(
+          spacing: 8.0, // 主轴(水平)方向间距
+          runSpacing: 4.0, // 纵轴（垂直）方向间距
+          alignment: WrapAlignment.center, //沿主轴方向居中
           children: <Widget>[
             new Text(
               'You have pushed the button this many times:',
             ),
             new Text(
-              '$_counter',
+              '$_counter                  ',
               style: Theme.of(context).textTheme.display1,
             ),
-            new Text('''wen '''),
+            new Text('''基础显示'''),
             // 添加一个按钮组件，用于跳转新路由（新页面）
+            // 跳转至新路由的按钮
             FlatButton(
                 child: Text('open new route'),
                 textColor: Colors.blue,
@@ -118,12 +121,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   // );
                   Navigator.pushNamed(context, "new_page");
                 }),
-            // 跳转至新路由的按钮
-            FlatButton(
-              child: Text('open new counter'),
-              textColor: Colors.blue,
-              onPressed: () => Navigator.pushNamed(context, "cuper_page"),
-            ),
+            
+            
             // 添加文本及样式路由按钮
             RaisedButton(
               child: Text('基础Widgets'),
@@ -139,18 +138,18 @@ class _MyHomePageState extends State<MyHomePage> {
             new RandomWordsWidget(),
             // 打印文字的组件
             Echo(
-              text: "接收输入文字并回显",
+              text: "大致学习过程",
             )
           ],
         ),
-      ),
-      // 右下角的按钮
-      floatingActionButton: new FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: new Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+
+        // 右下角的按钮
+        floatingActionButton: new FloatingActionButton(
+          onPressed: _incrementCounter,
+          tooltip: 'Increment',
+          child: new Icon(Icons.add),
+        ) // This trailing comma makes auto-formatting nicer for build methods.
+        );
   }
 }
 
@@ -577,6 +576,11 @@ class RowAndColumnRoute extends StatelessWidget {
               textColor: Colors.blue,
               onPressed: () => Navigator.pushNamed(context, 'flex_page'),
             ),
+            RaisedButton(
+              child: Text('Wrap流式布局'),
+              textColor: Colors.blue,
+              onPressed: () => Navigator.pushNamed(context, 'wrap_page'),
+            ),
           ],
         ));
   }
@@ -638,7 +642,7 @@ class NewFlex extends StatelessWidget {
         body: new Column(
           children: <Widget>[
             Flex(
-              //Flex的两个子widget按1：2来占据水平空间  
+              //Flex的两个子widget按1：2来占据水平空间
               direction: Axis.horizontal,
               children: <Widget>[
                 Expanded(
@@ -656,15 +660,30 @@ class NewFlex extends StatelessWidget {
               ],
             ),
             Padding(
-              padding: const EdgeInsets.only(top:20),
+              padding: const EdgeInsets.only(top: 20),
               child: SizedBox(
                 height: 100.0,
                 child: Flex(
+                  //Flex的三个子widget，在 垂直 方向按2：1：1来占用100像素的空间
                   direction: Axis.vertical,
                   children: <Widget>[
                     Expanded(
                       flex: 1,
-                      
+                      child: Container(
+                        height: 30.0,
+                        color: Colors.red,
+                      ),
+                    ),
+                    // 一个Flex的简单包装
+                    Spacer(
+                      flex: 1,
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        height: 30.0,
+                        color: Colors.green,
+                      ),
                     ),
                   ],
                 ),
@@ -672,6 +691,45 @@ class NewFlex extends StatelessWidget {
             ),
           ],
         ));
+  }
+}
+
+// 流式布局Wrap、Flow
+class NewWrap extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: AppBar(title: Text('流式布局Wrap')),
+      body: Wrap(
+        // 主轴水平方向间距
+        spacing: 8.0,
+        // 纵轴垂直方向间距
+        runSpacing: 4.0,
+        // 沿主轴方向居中
+        alignment: WrapAlignment.center,
+        children: <Widget>[
+          new Chip(
+              avatar: new CircleAvatar(
+                  backgroundColor: Colors.blue, child: Text('A')),
+              label: new Text('Hamilton')),
+          new Chip(
+            avatar: new CircleAvatar(
+                backgroundColor: Colors.blue, child: Text('M')),
+            label: new Text('Lafayette'),
+          ),
+          new Chip(
+            avatar: new CircleAvatar(
+                backgroundColor: Colors.blue, child: Text('H')),
+            label: new Text('Mulligan'),
+          ),
+          new Chip(
+            avatar: new CircleAvatar(
+                backgroundColor: Colors.blue, child: Text('J')),
+            label: new Text('Laurens'),
+          ),
+        ],
+      ),
+    );
   }
 }
 
