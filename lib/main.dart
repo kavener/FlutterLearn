@@ -53,8 +53,10 @@ class MyApp extends StatelessWidget {
         "row_page": (context) => NewRow(),
         // 学习Flex弹性布局
         "flex_page": (context) => NewFlex(),
-        // 学习W流式布局rap
+        // 学习流式布局Wrap
         "wrap_page": (context) => NewWrap(),
+        // 学习层叠布局Stack
+        "stack_page": (context) => NewStack(),
       },
       // 应用首页路由
       home: new MyHomePage(title: 'Flutter Demo Home Page'),
@@ -121,8 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   // );
                   Navigator.pushNamed(context, "new_page");
                 }),
-            
-            
+
             // 添加文本及样式路由按钮
             RaisedButton(
               child: Text('基础Widgets'),
@@ -581,6 +582,11 @@ class RowAndColumnRoute extends StatelessWidget {
               textColor: Colors.blue,
               onPressed: () => Navigator.pushNamed(context, 'wrap_page'),
             ),
+            RaisedButton(
+              child: Text("Stack层叠布局"),
+              textColor: Colors.blue,
+              onPressed: ()=> Navigator.pushNamed(context, 'stack_page'),
+            ),
           ],
         ));
   }
@@ -729,6 +735,28 @@ class NewWrap extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+// 层叠布局 Stack、Positioned
+class NewStack extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: AppBar(title: Text('层叠布局Stack')),
+      body: new ConstrainedBox(
+          constraints: BoxConstraints.expand(),
+          child: Stack(
+            // 指定未定位或部分定位widget的对齐方式
+            alignment: Alignment.center,
+            children: <Widget>[
+              Container(
+                child: Text('Hello world', style: TextStyle(color: Colors.white,)),
+                color: Colors.red,
+              ),
+            ],
+          )),
     );
   }
 }
