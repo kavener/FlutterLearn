@@ -27,6 +27,12 @@ class MyApp extends StatelessWidget {
       routes: {
         "new_page": (context) => NewRoute(),
         // 使用新路由来学习 文本及样式
+        /*
+         开始 基础Widget 的学习： 
+         */
+        // 添加一个 基础Widget总页面：
+        "base_widget_page": (context) => BaseWidget(),
+
         "text_page": (context) => NewText(),
         // 学习 按钮
         "button_page": (context) => NewButton(),
@@ -34,6 +40,19 @@ class MyApp extends StatelessWidget {
         'image_page': (context) => NewImage(),
         // 学习单选开关和复选框
         "switch_and_checkbox": (context) => NewSwitchAndCheckBox(),
+        // 学习输入框及表单
+        "text_field_page": (context) => NewTextField(),
+        // Form表单
+        "form_page": (context) => FormTestRoute(),
+        /*
+         开始页面 布局类Widget 的学习： 
+         */
+        // 添加一个页面布局总页面
+        "row_column_page": (context) => RowAndColumnRoute(),
+        // 学习纵向Row布局
+        "row_page": (context) => NewRow(),
+        // 学习Flex弹性布局
+        "flex_page": (context) => NewFlex(),
       },
       // 应用首页路由
       home: new MyHomePage(title: 'Flutter Demo Home Page'),
@@ -81,10 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.display1,
             ),
-            new Text('''显示文字
-            可以多行
-              书写
-            '''),
+            new Text('''wen '''),
             // 添加一个按钮组件，用于跳转新路由（新页面）
             FlatButton(
                 child: Text('open new route'),
@@ -109,30 +125,15 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () => Navigator.pushNamed(context, "cuper_page"),
             ),
             // 添加文本及样式路由按钮
-            FlatButton(
-              child: Text('文本及样式',
-                  style: TextStyle(
-                    background: new Paint()..color = Colors.yellow,
-                  )),
-              textColor: Colors.blue,
-              onPressed: () => Navigator.pushNamed(context, "text_page"),
-            ),
-            // 添加按钮路由按钮，该button有阴影效果
             RaisedButton(
-              child: Text('按钮'),
+              child: Text('基础Widgets'),
               textColor: Colors.blue,
-              onPressed: () => Navigator.pushNamed(context, "button_page"),
+              onPressed: () => Navigator.pushNamed(context, "base_widget_page"),
             ),
             RaisedButton(
-              child: Text('图片及ICON'),
+              child: Text('布局学习'),
               textColor: Colors.blue,
-              onPressed: () => Navigator.pushNamed(context, "image_page"),
-            ),
-            RaisedButton(
-              child: Text('单选开关及复选框'),
-              textColor: Colors.blue,
-              onPressed: () =>
-                  Navigator.pushNamed(context, "switch_and_checkbox"),
+              onPressed: () => Navigator.pushNamed(context, 'row_column_page'),
             ),
             // 通过english_words包随机显示一个英文单词
             new RandomWordsWidget(),
@@ -163,6 +164,56 @@ class NewRoute extends StatelessWidget {
   }
 }
 
+// 基础Weight学习
+class BaseWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: AppBar(title: Text('基础Widgets')),
+      body: new Column(
+        children: <Widget>[
+          FlatButton(
+            child: Text('文本及样式',
+                style: TextStyle(
+                  background: new Paint()..color = Colors.yellow,
+                )),
+            textColor: Colors.blue,
+            onPressed: () => Navigator.pushNamed(context, "text_page"),
+          ),
+          // 添加按钮路由按钮，该button有阴影效果
+          RaisedButton(
+            child: Text('按钮'),
+            textColor: Colors.blue,
+            onPressed: () => Navigator.pushNamed(context, "button_page"),
+          ),
+          RaisedButton(
+            child: Text('图片及ICON'),
+            textColor: Colors.blue,
+            onPressed: () => Navigator.pushNamed(context, "image_page"),
+          ),
+          RaisedButton(
+            child: Text('单选开关及复选框'),
+            textColor: Colors.blue,
+            onPressed: () =>
+                Navigator.pushNamed(context, "switch_and_checkbox"),
+          ),
+          RaisedButton(
+            child: Text("输入框及表单"),
+            textColor: Colors.blue,
+            onPressed: () => Navigator.pushNamed(context, 'text_field_page'),
+          ),
+          RaisedButton(
+            child: Text('表单Form'),
+            textColor: Colors.blue,
+            onPressed: () => Navigator.pushNamed(context, 'form_page'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// 文本及样式
 class NewText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -243,6 +294,7 @@ class NewText extends StatelessWidget {
   }
 }
 
+// 按钮
 class NewButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -286,7 +338,7 @@ class NewButton extends StatelessWidget {
   }
 }
 
-
+// 图片和Icon
 class NewImage extends StatelessWidget {
   // 预定义一组字体图标：
 
@@ -340,6 +392,7 @@ class NewImage extends StatelessWidget {
   }
 }
 
+// 单选开关和复选框
 class NewSwitchAndCheckBox extends StatefulWidget {
   @override
   _NewSwitchAndCheckBoxState createState() => new _NewSwitchAndCheckBoxState();
@@ -368,19 +421,259 @@ class _NewSwitchAndCheckBoxState extends State<NewSwitchAndCheckBox> {
             value: _checkboxSelected,
             // 选中时的颜色
             activeColor: Colors.red,
-            onChanged: (value){
+            onChanged: (value) {
               setState(() {
-               _checkboxSelected = value; 
+                _checkboxSelected = value;
               });
             },
           ),
-
         ],
       )),
     );
   }
 }
 
+// 简单输入
+class NewTextField extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // 定义一个controller，可以获取内容，也可以监听文本变化
+    TextEditingController _selectionControlle = new TextEditingController();
+    _selectionControlle.text = "Hello world";
+    _selectionControlle.selection = TextSelection(
+      baseOffset: 2,
+      extentOffset: _selectionControlle.text.length,
+    );
+    return new Scaffold(
+      appBar: AppBar(title: Text('输入框及表单')),
+      body: new Center(
+        child: new Column(
+          children: <Widget>[
+            // 登陆输入框
+            TextField(
+              autofocus: true,
+              decoration: InputDecoration(
+                labelText: "用户名",
+                hintText: "用户名或邮箱",
+                prefixIcon: Icon(Icons.person),
+              ),
+              // 可以通过onChanged获取输入的内容，也可以监听文本变化
+              // onChanged: (context){
+              //   print(context);
+              // },
+              // 比如通过controller获取输入的内容，监听文本变化，除了这两种功能，还可以设置默认值、选择文本
+              controller: _selectionControlle,
+            ),
+            TextField(
+              decoration: InputDecoration(
+                labelText: "密码",
+                hintText: "您的登陆密码",
+                prefixIcon: Icon(Icons.lock),
+              ),
+              obscureText: true,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// 表单Form测试
+class FormTestRoute extends StatefulWidget {
+  @override
+  _FormTestRouteState createState() => new _FormTestRouteState();
+}
+
+class _FormTestRouteState extends State<FormTestRoute> {
+  TextEditingController _unameController = new TextEditingController();
+  TextEditingController _pwdController = new TextEditingController();
+  GlobalKey _formKey = new GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    // 此处不能使用PageScaffold 尝试普通布局
+    // return PageScaffold(
+    // ......
+    // );
+    return new Scaffold(
+      appBar: AppBar(title: Text('表单Form')),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+        child: Form(
+            key: _formKey,
+            autovalidate: true,
+            child: Column(
+              children: <Widget>[
+                TextFormField(
+                  autofocus: true,
+                  controller: _unameController,
+                  decoration: InputDecoration(
+                    labelText: "用户名",
+                    hintText: '用户名或邮箱',
+                    icon: Icon(Icons.person),
+                  ),
+                  // 校验用户名
+                  validator: (v) {
+                    return v.trim().length > 0 ? null : "用户名不能为空";
+                  },
+                ),
+                TextFormField(
+                  controller: _pwdController,
+                  decoration: InputDecoration(
+                    labelText: "密码",
+                    hintText: '您的登陆密码',
+                    icon: Icon(Icons.lock),
+                  ),
+                  obscureText: true,
+                  validator: (v) {
+                    return v.trim().length > 5 ? null : "密码不能少于6位";
+                  },
+                ),
+                // 登陆按钮
+                Padding(
+                  padding: const EdgeInsets.only(top: 28.0),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: RaisedButton(
+                          padding: EdgeInsets.all(15.0),
+                          child: Text('登陆'),
+                          color: Theme.of(context).primaryColor,
+                          textColor: Colors.white,
+                          onPressed: () {
+                            if ((_formKey.currentState as FormState)
+                                .validate()) {
+                              //验证通过提交数据
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            )),
+      ),
+    );
+  }
+}
+
+// 布局类Widgets 学习
+class RowAndColumnRoute extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+        appBar: AppBar(title: Text("布局类Widgets 学习")),
+        body: Column(
+          children: <Widget>[
+            RaisedButton(
+              child: Text('ROw纵向布局'),
+              textColor: Colors.blue,
+              onPressed: () => Navigator.pushNamed(context, 'row_page'),
+            ),
+            RaisedButton(
+              child: Text('Flex弹性布局'),
+              textColor: Colors.blue,
+              onPressed: () => Navigator.pushNamed(context, 'flex_page'),
+            ),
+          ],
+        ));
+  }
+}
+
+// Row纵向布局
+class NewRow extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+        appBar: AppBar(title: Text('纵轴Row')),
+        body: Column(
+          //测试Row对齐方式，排除Column默认居中对齐的干扰
+          crossAxisAlignment: CrossAxisAlignment.start,
+          // Widge子数组
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[Text('水平方向对齐方式.'), Text('现在是居中对齐.')],
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(" hello world "),
+                Text(" I am Jack "),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              textDirection: TextDirection.rtl,
+              children: <Widget>[
+                Text(" hello world "),
+                Text(" I am Jack "),
+              ],
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              verticalDirection: VerticalDirection.up,
+              children: <Widget>[
+                Text(
+                  " hello world ",
+                  style: TextStyle(fontSize: 30.0),
+                ),
+                Text(" I am Jack "),
+              ],
+            ),
+          ],
+        ));
+  }
+}
+
+// 弹性布局Flex
+class NewFlex extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+        appBar: AppBar(title: Text('Flex弹性布局')),
+        body: new Column(
+          children: <Widget>[
+            Flex(
+              //Flex的两个子widget按1：2来占据水平空间  
+              direction: Axis.horizontal,
+              children: <Widget>[
+                Expanded(
+                    flex: 1,
+                    child: Container(
+                      height: 30.0,
+                      color: Colors.red,
+                    )),
+                Expanded(
+                    flex: 2,
+                    child: Container(
+                      height: 30.0,
+                      color: Colors.green,
+                    )),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top:20),
+              child: SizedBox(
+                height: 100.0,
+                child: Flex(
+                  direction: Axis.vertical,
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ));
+  }
+}
 
 class CuoertinoTestRoute extends StatelessWidget {
   @override
