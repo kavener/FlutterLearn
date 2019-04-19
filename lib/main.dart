@@ -32,6 +32,8 @@ class MyApp extends StatelessWidget {
         "button_page": (context) => NewButton(),
         //  学习图片组件及ICON
         'image_page': (context) => NewImage(),
+        // 学习单选开关和复选框
+        "switch_and_checkbox": (context) => NewSwitchAndCheckBox(),
       },
       // 应用首页路由
       home: new MyHomePage(title: 'Flutter Demo Home Page'),
@@ -109,13 +111,10 @@ class _MyHomePageState extends State<MyHomePage> {
             // 添加文本及样式路由按钮
             FlatButton(
               child: Text('文本及样式',
-                style: TextStyle(
-                  background: new Paint()..color = Colors.yellow,
-                )
-              ),
-              
+                  style: TextStyle(
+                    background: new Paint()..color = Colors.yellow,
+                  )),
               textColor: Colors.blue,
-              
               onPressed: () => Navigator.pushNamed(context, "text_page"),
             ),
             // 添加按钮路由按钮，该button有阴影效果
@@ -125,9 +124,15 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () => Navigator.pushNamed(context, "button_page"),
             ),
             RaisedButton(
-              child: Text('图片组建及按钮'),
+              child: Text('图片及ICON'),
               textColor: Colors.blue,
               onPressed: () => Navigator.pushNamed(context, "image_page"),
+            ),
+            RaisedButton(
+              child: Text('单选开关及复选框'),
+              textColor: Colors.blue,
+              onPressed: () =>
+                  Navigator.pushNamed(context, "switch_and_checkbox"),
             ),
             // 通过english_words包随机显示一个英文单词
             new RandomWordsWidget(),
@@ -248,20 +253,20 @@ class NewButton extends StatelessWidget {
           children: <Widget>[
             RaisedButton(
               child: Text('RaiseButton'),
-              onPressed: (){},
-              ),
+              onPressed: () {},
+            ),
             FlatButton(
               child: Text("FlatButton"),
-              onPressed: (){},
+              onPressed: () {},
             ),
             OutlineButton(
               child: Text("OutlineButton"),
-              onPressed: (){},
+              onPressed: () {},
             ),
             // 可点击的Icon
             IconButton(
               icon: Icon(Icons.thumb_up),
-              onPressed: (){},
+              onPressed: () {},
             ),
             // 设置按钮样式，阴影风格真的不错。
             RaisedButton(
@@ -270,8 +275,9 @@ class NewButton extends StatelessWidget {
               highlightColor: Colors.blue[700],
               colorBrightness: Brightness.dark,
               splashColor: Colors.grey,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-              onPressed: (){},
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)),
+              onPressed: () {},
             ),
           ],
         ),
@@ -280,22 +286,101 @@ class NewButton extends StatelessWidget {
   }
 }
 
+
 class NewImage extends StatelessWidget {
+  // 预定义一组字体图标：
+
   @override
   Widget build(BuildContext context) {
+    String icons = "";
+    // accessible: &#xE914; or 0xE914 or E914
+    icons += "\uE914";
+    // error: &#xE000; or 0xE000 or E000
+    icons += " \uE000";
+    // fingerprint: &#xE90D; or 0xE90D or E90D
+    icons += " \uE90D";
     return new Scaffold(
-      appBar: AppBar(title:Text('图片及ICON')),
+      appBar: AppBar(title: Text('图片及ICON')),
       body: Center(
         child: Column(
           children: <Widget>[
-            
+            // 本地图片组建
+            Image.asset(
+              "images/avatar.png",
+              width: 100.0,
+            ),
+            // 显示网络图片
+            Image.network(
+              "https://avatars1.githubusercontent.com/u/20992063?s=460&v=4",
+              width: 200.0,
+            ),
+            //简单设置图片属性
+            Image(
+              image: NetworkImage(
+                  'https://avatars1.githubusercontent.com/u/20992063?s=460&v=4'),
+              width: 100,
+              height: 100.0,
+              color: Colors.blue,
+              colorBlendMode: BlendMode.difference,
+              // 图片空间小于显示空间，设置图片显示的重复规则
+              repeat: ImageRepeat.repeatY,
+            ),
+            // 字体图标的使用
+            Text(
+              icons,
+              style: TextStyle(
+                  fontFamily: "MaterialIcons",
+                  fontSize: 24.0,
+                  color: Colors.green),
+            ),
           ],
         ),
-
       ),
     );
   }
 }
+
+class NewSwitchAndCheckBox extends StatefulWidget {
+  @override
+  _NewSwitchAndCheckBoxState createState() => new _NewSwitchAndCheckBoxState();
+}
+
+class _NewSwitchAndCheckBoxState extends State<NewSwitchAndCheckBox> {
+  bool _switchSelected = true;
+  bool _checkboxSelected = true;
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: AppBar(title: Text('单选开关和复选框')),
+      body: new Center(
+          child: Column(
+        children: <Widget>[
+          Switch(
+            value: _switchSelected, //当前状态
+            onChanged: (value) {
+              //重新构建页面
+              setState(() {
+                _switchSelected = value;
+              });
+            },
+          ),
+          Checkbox(
+            value: _checkboxSelected,
+            // 选中时的颜色
+            activeColor: Colors.red,
+            onChanged: (value){
+              setState(() {
+               _checkboxSelected = value; 
+              });
+            },
+          ),
+
+        ],
+      )),
+    );
+  }
+}
+
 
 class CuoertinoTestRoute extends StatelessWidget {
   @override
