@@ -585,7 +585,7 @@ class RowAndColumnRoute extends StatelessWidget {
             RaisedButton(
               child: Text("Stack层叠布局"),
               textColor: Colors.blue,
-              onPressed: ()=> Navigator.pushNamed(context, 'stack_page'),
+              onPressed: () => Navigator.pushNamed(context, 'stack_page'),
             ),
           ],
         ));
@@ -752,7 +752,10 @@ class NewStack extends StatelessWidget {
             alignment: Alignment.center,
             children: <Widget>[
               Container(
-                child: Text('Hello world', style: TextStyle(color: Colors.white,)),
+                child: Text('Hello world',
+                    style: TextStyle(
+                      color: Colors.white,
+                    )),
                 color: Colors.red,
               ),
             ],
