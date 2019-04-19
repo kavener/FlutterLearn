@@ -57,6 +57,13 @@ class MyApp extends StatelessWidget {
         "wrap_page": (context) => NewWrap(),
         // 学习层叠布局Stack
         "stack_page": (context) => NewStack(),
+        /*
+         开始页面 容器类Widget 的学习： 
+         */
+        // 添加一个页面布局总页面
+        "container_page": (context) => ContainerRoute(),
+        // 学习Padding
+        "padding_page": (context) => NewPadding(),
       },
       // 应用首页路由
       home: new MyHomePage(title: 'Flutter Demo Home Page'),
@@ -131,9 +138,14 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () => Navigator.pushNamed(context, "base_widget_page"),
             ),
             RaisedButton(
-              child: Text('布局学习'),
+              child: Text('布局类Widgets'),
               textColor: Colors.blue,
               onPressed: () => Navigator.pushNamed(context, 'row_column_page'),
+            ),
+            RaisedButton(
+              child: Text('容器类Widgets'),
+              textColor: Colors.blue,
+              onPressed: () => Navigator.pushNamed(context, 'container_page'),
             ),
             // 通过english_words包随机显示一个英文单词
             new RandomWordsWidget(),
@@ -771,6 +783,57 @@ class NewStack extends StatelessWidget {
     );
   }
 }
+// 容器类Widgetsx 学习
+
+class ContainerRoute extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+        appBar: AppBar(title: Text("容器类学习")),
+        body: new Column(
+          children: <Widget>[
+            RaisedButton(
+              child: Text('Padding'),
+              textColor: Colors.blue,
+              onPressed: () => Navigator.pushNamed(context, 'padding_page'),
+            ),
+          ],
+        ));
+  }
+}
+
+// Padding
+class NewPadding extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: AppBar(title: Text('Padding学习')),
+      body: new Padding(
+          // 上下左右各添加16像素空白
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                  // 左边添加8像素补白
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Text('Hello world'),
+              ),
+              Padding(
+            //上下各添加8像素补白
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text("I am Jack"),
+          ),
+          Padding(
+            // 分别指定四个方向的补白
+            padding: const EdgeInsets.fromLTRB(20.0,.0,20.0,20.0),
+            child: Text("Your friend"),
+          )
+            ],
+          )),
+    );
+  }
+}
 
 class CuoertinoTestRoute extends StatelessWidget {
   @override
@@ -789,7 +852,7 @@ class CuoertinoTestRoute extends StatelessWidget {
     );
   }
 }
- 
+
 class RandomWordsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
