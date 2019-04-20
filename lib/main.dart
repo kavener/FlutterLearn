@@ -64,6 +64,7 @@ class MyApp extends StatelessWidget {
         "container_page": (context) => ContainerRoute(),
         // 学习Padding
         "padding_page": (context) => NewPadding(),
+        "constrained_box_page": (context) => NewConstrainedBox(),
       },
       // 应用首页路由
       home: new MyHomePage(title: 'Flutter Demo Home Page'),
@@ -797,6 +798,12 @@ class ContainerRoute extends StatelessWidget {
               textColor: Colors.blue,
               onPressed: () => Navigator.pushNamed(context, 'padding_page'),
             ),
+            RaisedButton(
+              child: Text('ConstrainedBox'),
+              textColor: Colors.blue,
+              onPressed: () =>
+                  Navigator.pushNamed(context, 'constrained_box_page'),
+            ),
           ],
         ));
   }
@@ -815,23 +822,42 @@ class NewPadding extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Padding(
-                  // 左边添加8像素补白
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Text('Hello world'),
+                // 左边添加8像素补白
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Text('Hello world'),
               ),
               Padding(
-            //上下各添加8像素补白
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text("I am Jack"),
-          ),
-          Padding(
-            // 分别指定四个方向的补白
-            padding: const EdgeInsets.fromLTRB(20.0,.0,20.0,20.0),
-            child: Text("Your friend"),
-          )
+                //上下各添加8像素补白
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text("I am Jack"),
+              ),
+              Padding(
+                // 分别指定四个方向的补白
+                padding: const EdgeInsets.fromLTRB(20.0, .0, 20.0, 20.0),
+                child: Text("Your friend"),
+              )
             ],
           )),
     );
+  }
+}
+
+// 布局限制类容器 ConstrianedBox、SizeBox
+class NewConstrainedBox extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+        appBar: AppBar(title: Text("ConstrianedBox、SizeBox学习")),
+        body: new ConstrainedBox(
+          // 最小高度50，宽度尽可能大的红色容器
+          constraints:
+              BoxConstraints(minWidth: double.infinity, minHeight: 50.0),
+          // 虽然container高度为5但是，容器的最小高度为50，所以最终生效的是50
+          child: Container(
+              height: 5.0,
+              child: new DecoratedBox(
+                  decoration: BoxDecoration(color: Colors.red))),
+        ));
   }
 }
 
@@ -881,4 +907,3 @@ class Echo extends StatelessWidget {
     ));
   }
 }
-// Git分支冲突问题
