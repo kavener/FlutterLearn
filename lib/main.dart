@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/cupertino.dart';
+import 'dart:math' as math;
 
 // 应用程序入口，runApp功能即启动Flutter应用，接收的参数为Widget参数
 void main() => runApp(new MyApp());
@@ -64,7 +65,14 @@ class MyApp extends StatelessWidget {
         "container_page": (context) => ContainerRoute(),
         // 学习Padding
         "padding_page": (context) => NewPadding(),
+        // 学习 ConstrainedBox
         "constrained_box_page": (context) => NewConstrainedBox(),
+        // 学习DecoraedBox
+        "decorated_box_page": (context) => NewDecoratedBox(),
+        // Transform变换和Container
+        "transform_page": (context) => NewTransformAndContainer(),
+        // Scaffold 导航等
+        "scaffold_page": (context) => ScaffoldRoute(),
       },
       // 应用首页路由
       home: new MyHomePage(title: 'Flutter Demo Home Page'),
@@ -804,6 +812,22 @@ class ContainerRoute extends StatelessWidget {
               onPressed: () =>
                   Navigator.pushNamed(context, 'constrained_box_page'),
             ),
+            RaisedButton(
+              child: Text("DecoratedBox"),
+              textColor: Colors.blue,
+              onPressed: () =>
+                  Navigator.pushNamed(context, "decorated_box_page"),
+            ),
+            RaisedButton(
+              child: Text("Transform"),
+              textColor: Colors.blue,
+              onPressed: () => Navigator.pushNamed(context, "transform_page"),
+            ),
+            RaisedButton(
+              child: Text('Scaffold'),
+              textColor: Colors.blue,
+              onPressed: () => Navigator.pushNamed(context, 'scaffold_page'),
+            ),
           ],
         ));
   }
@@ -843,23 +867,247 @@ class NewPadding extends StatelessWidget {
 }
 
 // 布局限制类容器 ConstrianedBox、SizeBox
+// 预先定义一个redBox，一个红色背景的盒子
+Widget redBox = DecoratedBox(
+  decoration: BoxDecoration(color: Colors.red),
+);
+
 class NewConstrainedBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: AppBar(title: Text("ConstrianedBox、SizeBox学习")),
-        body: new ConstrainedBox(
-          // 最小高度50，宽度尽可能大的红色容器
-          constraints:
-              BoxConstraints(minWidth: double.infinity, minHeight: 50.0),
-          // 虽然container高度为5但是，容器的最小高度为50，所以最终生效的是50
-          child: Container(
-              height: 5.0,
-              child: new DecoratedBox(
-                  decoration: BoxDecoration(color: Colors.red))),
+        body: new Column(
+          children: <Widget>[
+            new Text('ConstrainedBox：'),
+            new ConstrainedBox(
+              // 最小高度50，宽度尽可能大的红色容器
+              constraints:
+                  BoxConstraints(minWidth: double.infinity, minHeight: 50.0),
+              // 虽然container高度为5但是，容器的最小高度为50，所以最终生效的是50
+              child: Container(height: 5.0, child: redBox),
+            ),
+            // SizedBox用于给子Widget指定固定的宽高
+            new Text('SizedBox：'),
+            SizedBox(
+              width: 80.0,
+              height: 80.0,
+              child: redBox,
+            ),
+            new Text('多重限制案例：'),
+            // 多重限制案例
+            ConstrainedBox(
+                // 父
+                constraints: BoxConstraints(minWidth: 60.0, minHeight: 60.0),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minWidth: 90.0, minHeight: 20.0),
+                  child: redBox,
+                )),
+            new Text('调换限制条件：'),
+            ConstrainedBox(
+                // 父
+                constraints: BoxConstraints(minWidth: 90.0, minHeight: 20.0),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minWidth: 60.0, minHeight: 60.0),
+                  child: redBox,
+                )),
+            new Text("'去除'多重限制"),
+            ConstrainedBox(
+              constraints: BoxConstraints(minWidth: 60, minHeight: 100),
+              child: UnconstrainedBox(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minWidth: 90, minHeight: 20),
+                  child: redBox,
+                ),
+              ),
+            ),
+          ],
         ));
   }
 }
+
+// 装饰容器DecoratedBox 漂亮警告
+class NewDecoratedBox extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: AppBar(title: Text('NewDecoratedBox学习')),
+      body: new DecoratedBox(
+          decoration: BoxDecoration(
+            // 背景渐变
+            gradient: LinearGradient(colors: [Colors.red, Colors.orange[700]]),
+            // 像素圆角
+            borderRadius: BorderRadius.circular(3.0),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black54,
+                  offset: Offset(2.0, 2.0),
+                  blurRadius: 4.0),
+            ],
+          ),
+          child: new Padding(
+            padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 18.0),
+            child: Text(
+              "Login",
+              style: TextStyle(color: Colors.white),
+            ),
+          )),
+    );
+  }
+}
+
+class NewTransformAndContainer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+        appBar: AppBar(title: Text("Transform学习")),
+        body: new Column(
+          children: <Widget>[
+            Container(
+              color: Colors.black,
+              child: new Transform(
+                alignment: Alignment.topRight,
+                transform: new Matrix4.skewY(0.3),
+                child: new Container(
+                  padding: const EdgeInsets.all(8.0),
+                  color: Colors.deepOrange,
+                  child: const Text("Apartment for rent!"),
+                ),
+              ),
+            ),
+            DecoratedBox(
+                decoration: BoxDecoration(color: Colors.red),
+                child: Transform.translate(
+                  offset: Offset(-20.0, -5.0),
+                  child: Text("Hello world"),
+                )),
+            DecoratedBox(
+              decoration: BoxDecoration(color: Colors.red),
+              child: Transform.rotate(
+                //旋转90度
+                angle: math.pi / 2,
+                child: Text("Hello world"),
+              ),
+            ),
+            DecoratedBox(
+                decoration: BoxDecoration(color: Colors.red),
+                child: Transform.scale(
+                    scale: 1.5, //放大到1.5倍
+                    child: Text("Hello world"))),
+            Container(
+              margin: EdgeInsets.all(20.0), //容器外补白
+              color: Colors.orange,
+              child: Text("Hello world!"),
+            ),
+            Container(
+              padding: EdgeInsets.all(20.0), //容器内补白
+              color: Colors.orange,
+              child: Text("Hello world!"),
+            ),
+            Padding(
+              padding: EdgeInsets.all(20.0),
+              child: DecoratedBox(
+                decoration: BoxDecoration(color: Colors.orange),
+                child: Text("Hello world!"),
+              ),
+            ),
+            DecoratedBox(
+              decoration: BoxDecoration(color: Colors.orange),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text("Hello world!"),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 50.0, left: 120.0), //容器外补白
+              constraints:
+                  BoxConstraints.tightFor(width: 200.0, height: 150.0), //卡片大小
+              decoration: BoxDecoration(
+                  //背景装饰
+                  gradient: RadialGradient(
+                      //背景径向渐变
+                      colors: [Colors.red, Colors.orange],
+                      center: Alignment.topLeft,
+                      radius: .98),
+                  boxShadow: [
+                    //卡片阴影
+                    BoxShadow(
+                        color: Colors.black54,
+                        offset: Offset(2.0, 2.0),
+                        blurRadius: 4.0)
+                  ]),
+              transform: Matrix4.rotationZ(.2), //卡片倾斜变换
+              alignment: Alignment.center, //卡片内文字居中
+              child: Text(
+                //卡片文字
+                "5.20", style: TextStyle(color: Colors.white, fontSize: 40.0),
+              ),
+            ),
+          ],
+        ));
+  }
+}
+
+// Scaffold、TabBar、底部导航
+class ScaffoldRoute extends StatefulWidget {
+  @override
+  _ScaffoldRouteState createState() => new _ScaffoldRouteState();
+}
+
+class _ScaffoldRouteState extends State<ScaffoldRoute> {
+  
+
+  
+  int _selectedIndex = 1;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        //导航栏
+        title: Text("App Name"),
+        // 手动设置leading自定义菜单图标
+        // leading: Builder(builder: (context){
+        //   return IconButton(icon: Icon(Icons.dashboard), color: Colors.white,
+        //     onPressed: (){
+        //       Scaffold.of(context).openDrawer();
+        //     },
+        //   );
+        // },),
+        actions: <Widget>[
+          //导航栏右侧菜单
+          IconButton(icon: Icon(Icons.share), onPressed: () {}),
+        ],
+      ),
+      // drawer: new MyDrawer(), //抽屉
+      bottomNavigationBar: BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('home')),
+          BottomNavigationBarItem(icon: Icon(Icons.business), title: Text('business')),
+          BottomNavigationBarItem(icon: Icon(Icons.school), title: Text("school")),
+
+        ],
+        currentIndex: _selectedIndex,
+        fixedColor: Colors.blue,
+        onTap: _onItemTapped,
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.ac_unit),
+        onPressed: _onAdd,
+      ),
+    );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  void _onAdd() {}
+}
+
+
+
 
 class CuoertinoTestRoute extends StatelessWidget {
   @override
