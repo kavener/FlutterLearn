@@ -80,9 +80,8 @@ class MyApp extends StatelessWidget {
         'NewScrollable_page': (context) => NewScrollable(),
         // 学习SingleChildScrollView
         'SingleChildScrollView_page': (context) => NewSingleChildScrollView(),
-        'InfiniteListView_page': (context) => ScrollNotificationTestRoute(),
-
-         
+        //  InfiniteListView InfiniteGridView CustomScrollViewTestRoute
+        'InfiniteListView_page': (context) => CustomScrollViewTestRoute(),
       },
       // 应用首页路由
       home: new MyHomePage(title: 'Flutter Demo Home Page'),
@@ -1132,14 +1131,13 @@ class NewScrollable extends StatelessWidget {
               child: Text('SingleChildScrollView'),
               textColor: Colors.blue,
               onPressed: () =>
-                  Navigator.pushNamed(context, 'SingleChildScrollView_page')
-          ),
+                  Navigator.pushNamed(context, 'SingleChildScrollView_page')),
           RaisedButton(
             child: Text('InfiniteListView'),
             textColor: Colors.blue,
-            onPressed: () => Navigator.pushNamed(context, 'InfiniteListView_page'),
+            onPressed: () =>
+                Navigator.pushNamed(context, 'InfiniteListView_page'),
           ),
-          
         ],
       ),
     );
@@ -1174,7 +1172,7 @@ class NewSingleChildScrollView extends StatelessWidget {
   }
 }
 
-// ListView 一个无限加载实例
+// ListView 一个无限加载实例 
 class InfiniteListView extends StatefulWidget {
   @override
   _InfiniteListViewState createState() => new _InfiniteListViewState();
@@ -1242,7 +1240,6 @@ class _InfiniteListViewState extends State<InfiniteListView> {
   }
 }
 
-
 // 模拟异步获取数据并利用GirdView展示
 class InfiniteGridView extends StatefulWidget {
   @override
@@ -1250,12 +1247,11 @@ class InfiniteGridView extends StatefulWidget {
 }
 
 class _InfiniteGridViewState extends State<InfiniteGridView> {
-
   List<IconData> _icons = []; //保存Icon数据
 
   @override
   void initState() {
-    // 初始化数据  
+    // 初始化数据
     _retrieveIcons();
   }
 
@@ -1264,19 +1260,18 @@ class _InfiniteGridViewState extends State<InfiniteGridView> {
     return new Scaffold(
       appBar: AppBar(title: Text('GridView')),
       body: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3, //每行三列
-            childAspectRatio: 1.0 //显示区域宽高相等
-        ),
-        itemCount: _icons.length,
-        itemBuilder: (context, index) {
-          //如果显示到最后一个并且Icon总数小于200时继续获取数据
-          if (index == _icons.length - 1 && _icons.length < 200) {
-            _retrieveIcons();
-          }
-          return Icon(_icons[index]);
-        }
-    ),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3, //每行三列
+              childAspectRatio: 1.0 //显示区域宽高相等
+              ),
+          itemCount: _icons.length,
+          itemBuilder: (context, index) {
+            //如果显示到最后一个并且Icon总数小于200时继续获取数据
+            if (index == _icons.length - 1 && _icons.length < 200) {
+              _retrieveIcons();
+            }
+            return Icon(_icons[index]);
+          }),
     );
   }
 
@@ -1288,15 +1283,14 @@ class _InfiniteGridViewState extends State<InfiniteGridView> {
           Icons.ac_unit,
           Icons.airport_shuttle,
           Icons.all_inclusive,
-          Icons.beach_access, Icons.cake,
+          Icons.beach_access,
+          Icons.cake,
           Icons.free_breakfast
         ]);
       });
     });
   }
 }
-
- 
 
 class CustomScrollViewTestRoute extends StatelessWidget {
   @override
@@ -1313,13 +1307,16 @@ class CustomScrollViewTestRoute extends StatelessWidget {
             flexibleSpace: FlexibleSpaceBar(
               title: const Text('Demo'),
               background: Image.asset(
-                "./images/avatar.png", fit: BoxFit.cover,),
+                "./images/avatar.png",
+                fit: BoxFit.cover,
+              ),
             ),
           ),
 
           SliverPadding(
             padding: const EdgeInsets.all(8.0),
-            sliver: new SliverGrid( //Grid
+            sliver: new SliverGrid(
+              //Grid
               gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2, //Grid按两列显示
                 mainAxisSpacing: 10.0,
@@ -1327,8 +1324,8 @@ class CustomScrollViewTestRoute extends StatelessWidget {
                 childAspectRatio: 4.0,
               ),
               delegate: new SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                  //创建子widget      
+                (BuildContext context, int index) {
+                  //创建子widget
                   return new Container(
                     alignment: Alignment.center,
                     color: Colors.cyan[100 * (index % 9)],
@@ -1343,16 +1340,15 @@ class CustomScrollViewTestRoute extends StatelessWidget {
           new SliverFixedExtentList(
             itemExtent: 50.0,
             delegate: new SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                  //创建列表项      
-                  return new Container(
-                    alignment: Alignment.center,
-                    color: Colors.lightBlue[100 * (index % 9)],
-                    child: new Text('list item $index'),
-                  );
-                },
-                childCount: 50 //50个列表项
-            ),
+                (BuildContext context, int index) {
+              //创建列表项
+              return new Container(
+                alignment: Alignment.center,
+                color: Colors.lightBlue[100 * (index % 9)],
+                child: new Text('list item $index'),
+              );
+            }, childCount: 50 //50个列表项
+                ),
           ),
         ],
       ),
@@ -1360,8 +1356,6 @@ class CustomScrollViewTestRoute extends StatelessWidget {
   }
 }
 
-
- 
 class CuoertinoTestRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
