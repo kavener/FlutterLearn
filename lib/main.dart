@@ -1,4 +1,6 @@
-
+// 一些汇总总结，迫在眉睫的需求，比如英文文档阅读能力（Dart文档，Flutter文档，外国社区等必须的能力要求，甚至文档翻译能力）
+// Dart、Flutter 中需多的类思想，函数式编程等思想
+// 不断实践，思考，理解其本质，即尝试源码的阅读，尤其是Dart和Flutter的源码极其优秀，再加之注释的完美搭配
 
 // 导入Material UI组件库
 import 'package:flutter/material.dart';
@@ -78,14 +80,15 @@ class MyApp extends StatelessWidget {
         'NewScrollable_page': (context) => NewScrollable(),
         // 学习SingleChildScrollView
         'SingleChildScrollView_page': (context) => NewSingleChildScrollView(),
+        'InfiniteListView_page': (context) => ScrollNotificationTestRoute(),
+
+         
       },
       // 应用首页路由
       home: new MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
-
-
 
 // 即继承一个有状态Widget组件
 class MyHomePage extends StatefulWidget {
@@ -166,7 +169,8 @@ class _MyHomePageState extends State<MyHomePage> {
             RaisedButton(
               child: Text('可滚动Widgets'),
               textColor: Colors.blue,
-              onPressed: () => Navigator.pushNamed(context, 'NewScrollable_page'),
+              onPressed: () =>
+                  Navigator.pushNamed(context, 'NewScrollable_page'),
             ),
             // 通过english_words包随机显示一个英文单词
             new RandomWordsWidget(),
@@ -1067,7 +1071,6 @@ class ScaffoldRoute extends StatefulWidget {
 }
 
 class _ScaffoldRouteState extends State<ScaffoldRoute> {
-  
   int _selectedIndex = 1;
   @override
   Widget build(BuildContext context) {
@@ -1092,9 +1095,10 @@ class _ScaffoldRouteState extends State<ScaffoldRoute> {
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('home')),
-          BottomNavigationBarItem(icon: Icon(Icons.business), title: Text('business')),
-          BottomNavigationBarItem(icon: Icon(Icons.school), title: Text("school")),
-
+          BottomNavigationBarItem(
+              icon: Icon(Icons.business), title: Text('business')),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.school), title: Text("school")),
         ],
         currentIndex: _selectedIndex,
         fixedColor: Colors.blue,
@@ -1116,25 +1120,33 @@ class _ScaffoldRouteState extends State<ScaffoldRoute> {
   void _onAdd() {}
 }
 
-
 // 可滚动Widgets
 class NewScrollable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: AppBar(title: Text('可滚动Widgets')),
-      body: new Column(children: <Widget>[
-        RaisedButton(
-          child: Text('SingleChildScrollView'),
-          textColor: Colors.blue,
-          onPressed: () => Navigator.pushNamed(context, 'SingleChildScrollView_page')
-        ),
-      ],),
+      body: new Column(
+        children: <Widget>[
+          RaisedButton(
+              child: Text('SingleChildScrollView'),
+              textColor: Colors.blue,
+              onPressed: () =>
+                  Navigator.pushNamed(context, 'SingleChildScrollView_page')
+          ),
+          RaisedButton(
+            child: Text('InfiniteListView'),
+            textColor: Colors.blue,
+            onPressed: () => Navigator.pushNamed(context, 'InfiniteListView_page'),
+          ),
+          
+        ],
+      ),
     );
   }
 }
 
-
+// SingleChildScrollView
 class NewSingleChildScrollView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -1142,23 +1154,214 @@ class NewSingleChildScrollView extends StatelessWidget {
     return new Scaffold(
       appBar: AppBar(title: Text('SingleChildScrollView学习')),
       body: Scrollbar(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(16.0),
-          child: Center(
-            child: Column(
-              // 动态创建一个 List<Widget>
-              children: str.split('')
-                  // 每个字母都用一个Text显示，设置字体大小为原来的两倍 
-                  .map((c) => Text(c, textScaleFactor: 2.0,))
-                  .toList(),
+          child: SingleChildScrollView(
+        padding: EdgeInsets.all(16.0),
+        child: Center(
+          child: Column(
+            // 动态创建一个 List<Widget>
+            children: str
+                .split('')
+                // 每个字母都用一个Text显示，设置字体大小为原来的两倍
+                .map((c) => Text(
+                      c,
+                      textScaleFactor: 2.0,
+                    ))
+                .toList(),
+          ),
+        ),
+      )),
+    );
+  }
+}
+
+// ListView 一个无限加载实例
+class InfiniteListView extends StatefulWidget {
+  @override
+  _InfiniteListViewState createState() => new _InfiniteListViewState();
+}
+
+class _InfiniteListViewState extends State<InfiniteListView> {
+  static const loadingTag = "##loading##"; //表尾标记
+  var _words = <String>[loadingTag];
+
+  @override
+  void initState() {
+    _retrieveData();
+  }
+
+  void _retrieveData() {
+    Future.delayed(Duration(seconds: 2)).then((e) {
+      _words.insertAll(
+          _words.length - 1,
+          //每次生成20个单词
+          generateWordPairs().take(20).map((e) => e.asPascalCase).toList());
+      setState(() {
+        //重新构建列表
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+        appBar: AppBar(title: Text("ListView学习")),
+        body: ListView.separated(
+          itemCount: _words.length,
+          itemBuilder: (context, index) {
+            //如果到了表尾
+            if (_words[index] == loadingTag) {
+              //不足100条，继续获取数据
+              if (_words.length - 1 < 100) {
+                //获取数据
+                _retrieveData();
+                //加载时显示loading
+                return Container(
+                  padding: const EdgeInsets.all(16.0),
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                      width: 24.0,
+                      height: 24.0,
+                      child: CircularProgressIndicator(strokeWidth: 2.0)),
+                );
+              } else {
+                //已经加载了100条数据，不再获取数据。
+                return Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(
+                      "没有更多了",
+                      style: TextStyle(color: Colors.grey),
+                    ));
+              }
+            }
+            //显示单词列表项
+            return ListTile(title: Text(_words[index]));
+          },
+          separatorBuilder: (context, index) => Divider(height: .0),
+        ));
+  }
+}
+
+
+// 模拟异步获取数据并利用GirdView展示
+class InfiniteGridView extends StatefulWidget {
+  @override
+  _InfiniteGridViewState createState() => new _InfiniteGridViewState();
+}
+
+class _InfiniteGridViewState extends State<InfiniteGridView> {
+
+  List<IconData> _icons = []; //保存Icon数据
+
+  @override
+  void initState() {
+    // 初始化数据  
+    _retrieveIcons();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: AppBar(title: Text('GridView')),
+      body: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3, //每行三列
+            childAspectRatio: 1.0 //显示区域宽高相等
+        ),
+        itemCount: _icons.length,
+        itemBuilder: (context, index) {
+          //如果显示到最后一个并且Icon总数小于200时继续获取数据
+          if (index == _icons.length - 1 && _icons.length < 200) {
+            _retrieveIcons();
+          }
+          return Icon(_icons[index]);
+        }
+    ),
+    );
+  }
+
+  //模拟异步获取数据
+  void _retrieveIcons() {
+    Future.delayed(Duration(milliseconds: 200)).then((e) {
+      setState(() {
+        _icons.addAll([
+          Icons.ac_unit,
+          Icons.airport_shuttle,
+          Icons.all_inclusive,
+          Icons.beach_access, Icons.cake,
+          Icons.free_breakfast
+        ]);
+      });
+    });
+  }
+}
+
+ 
+
+class CustomScrollViewTestRoute extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    //因为本路由没有使用Scaffold，为了让子级Widget(如Text)使用
+    //Material Design 默认的样式风格,我们使用Material作为本路由的根。
+    return Material(
+      child: CustomScrollView(
+        slivers: <Widget>[
+          //AppBar，包含一个导航栏
+          SliverAppBar(
+            pinned: true,
+            expandedHeight: 250.0,
+            flexibleSpace: FlexibleSpaceBar(
+              title: const Text('Demo'),
+              background: Image.asset(
+                "./images/avatar.png", fit: BoxFit.cover,),
             ),
           ),
-        )
+
+          SliverPadding(
+            padding: const EdgeInsets.all(8.0),
+            sliver: new SliverGrid( //Grid
+              gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, //Grid按两列显示
+                mainAxisSpacing: 10.0,
+                crossAxisSpacing: 10.0,
+                childAspectRatio: 4.0,
+              ),
+              delegate: new SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                  //创建子widget      
+                  return new Container(
+                    alignment: Alignment.center,
+                    color: Colors.cyan[100 * (index % 9)],
+                    child: new Text('grid item $index'),
+                  );
+                },
+                childCount: 20,
+              ),
+            ),
+          ),
+          //List
+          new SliverFixedExtentList(
+            itemExtent: 50.0,
+            delegate: new SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                  //创建列表项      
+                  return new Container(
+                    alignment: Alignment.center,
+                    color: Colors.lightBlue[100 * (index % 9)],
+                    child: new Text('list item $index'),
+                  );
+                },
+                childCount: 50 //50个列表项
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
+
+ 
 class CuoertinoTestRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
